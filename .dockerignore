@@ -1,0 +1,17 @@
+.vscode
+.idea
+node_modules/
+dist
+*.log
+*Dockerfile*
+*docker-compose*
+.dockerignore
+Makefile
+sample.env
+.editorconfig
+.git
+README.md
+.gitignore
+.nvimlog
+/db
+.eslintcache
