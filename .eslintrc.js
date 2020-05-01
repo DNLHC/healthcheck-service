@@ -26,14 +26,12 @@ module.exports = {
     jest: true,
     mongo: true
   },
-  parser: '@typescript-eslint/parser',
   parserOptions: {
+    parser: 'babel-eslint',
     ecmaVersion: 2018,
     sourceType: 'module'
   },
   extends: [
-    'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
     'plugin:promise/recommended',
     'standard',
     'plugin:prettier/recommended'
