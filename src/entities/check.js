@@ -4,19 +4,21 @@ export default function buildCreateCheck({
   md5,
   createSchedule,
 }) {
-  return async function ({
-    id,
-    name,
-    hash,
-    createdAt = Date.now(),
-    modifiedAt = Date.now(),
-    url,
-    active = false,
-    statusBefore,
-    statusAfter,
-    requestTime,
-    ...schedule
-  }) {
+  return async function (checkData = {}) {
+    let {
+      id,
+      name,
+      hash,
+      createdAt = Date.now(),
+      modifiedAt = Date.now(),
+      url,
+      active = false,
+      statusBefore,
+      statusAfter,
+      requestTime,
+      ...schedule
+    } = checkData;
+
     const _id = id || (await createId());
 
     if (!name) {
