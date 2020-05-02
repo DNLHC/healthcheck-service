@@ -1,6 +1,6 @@
 {
   "watch": "src",
-  "ignore": ["*.test.ts", "__test__/*"],
+  "ignore": ["*.test.js", "__test__/*"],
   "delay": "150",
   "events": {
     "restart": "fuser -k 5000/tcp -s"

@@ -22,8 +22,12 @@ down:
 rebuild:
 	docker-compose up --build --force-recreate -d
 
-db-bash:
-	docker-compose exec db bash -it
+enter-bash:
+	docker-compose exec $(CONTAINER) bash -it
+
+test:
+	docker build -t healthchecker:test --target test .
+	docker run --rm --env-file .env --network hc-net healthchecker:test
 
 log:
 ifdef CONTAINER

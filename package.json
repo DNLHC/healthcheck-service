@@ -6,11 +6,13 @@
   "scripts": {
     "start": "yarn run serve",
     "serve": "node dist/index.js",
-    "dev": "nodemon --exec babel-node src/index.js",
+    "dev": "nodemon --exec babel-node ./src/index.js",
+    "test": "jest src",
     "lint": "eslint ./src"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^25.5.1",
     "eslint": "^6.6.0",
     "eslint-config-import": "^0.13.0",
     "eslint-config-prettier": "^6.10.1",
@@ -21,6 +23,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-standard": "^4.0.1",
+    "faker": "^4.1.0",
+    "jest": "^25.5.3",
     "nodemon": "^2.0.2",
     "prettier": "^2.0.2"
   },

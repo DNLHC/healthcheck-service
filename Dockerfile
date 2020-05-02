@@ -18,3 +18,13 @@ ENV NODE_ENV=development
 ENV PATH=/app/node_modules/.bin:$PATH
 RUN yarn install --frozen-lockfile
 CMD ["yarn", "run", "dev"]
+
+FROM base as source
+COPY --chown=node:node . .
+
+FROM source as test
+ENV NODE_ENV=test
+ENV PATH=/app/node_modules/.bin:$PATH
+COPY --from=dev /app/node_modules /app/node_modules
+RUN yarn run lint
+CMD [ "yarn", "run", "test" ]
