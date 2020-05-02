@@ -1,7 +1,12 @@
 import { createCheck } from '../entities';
 import ErrorResponse from '../utils/error-response';
 
-export default function createEditCheck({ checksDb }) {
+export default function createEditCheck({
+  checksDb,
+  scheduler,
+  createHandleCheck,
+  createHasAttributeChanged,
+}) {
   return async function ({ id, ...changes }) {
     if (!id) {
       throw new ErrorResponse('You must supply an id.', 400);
@@ -25,6 +30,15 @@ export default function createEditCheck({ checksDb }) {
 
     const checkSchedule = check.getSchedule();
 
+    const hasAttributeChanged = createHasAttributeChanged({
+      changes,
+      existing,
+    });
+
+    if (hasAttributeChanged('url')) {
+      check.resetResource();
+    }
+
     const updatedCheck = await checksDb.update({
       id,
       hash: check.getHash(),
@@ -37,6 +51,17 @@ export default function createEditCheck({ checksDb }) {
       requestTime: check.getRequestTime(),
       cron: checkSchedule.getCron(),
     });
+
+    if (hasAttributeChanged('cron')) {
+      scheduler.scheduleJob({
+        id: check.getId(),
+        cron: checkSchedule.getCron(),
+        active: check.isActive(),
+        handler: createHandleCheck({ id: check.getId() }),
+      });
+    } else if (hasAttributeChanged('active')) {
+      scheduler.toggle({ id: check.getId(), active: check.isActive() });
+    }
 
     return { ...existing, ...updatedCheck };
   };

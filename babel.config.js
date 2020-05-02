@@ -9,6 +9,7 @@ const config = {
       },
     ],
   ],
+  plugins: ['lodash'],
 };
 
 module.exports = config;

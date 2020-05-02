@@ -1,5 +1,5 @@
 import ErrorResponse from '../utils/error-response';
-export default function createRemoveCheck({ checksDb }) {
+export default function createRemoveCheck({ checksDb, scheduler }) {
   return async function ({ id }) {
     if (!id) {
       throw new ErrorResponse('You must supply an id.', 400);
@@ -15,6 +15,8 @@ export default function createRemoveCheck({ checksDb }) {
     }
 
     await checksDb.remove({ id });
+
+    scheduler.destroy({ id });
 
     return {
       deletedCount: 1,
