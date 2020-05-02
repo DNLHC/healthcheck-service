@@ -8,7 +8,6 @@ export default function buildCreateCheck({
     let {
       id,
       name,
-      hash,
       createdAt = Date.now(),
       modifiedAt = Date.now(),
       url,
@@ -47,6 +46,8 @@ export default function buildCreateCheck({
       const cron = validSchedule.getCron();
       return md5(`${name}${url}${active}${cron}`);
     };
+
+    let hash;
 
     return Object.freeze({
       getName: () => name,

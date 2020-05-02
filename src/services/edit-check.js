@@ -18,6 +18,10 @@ export default function createEditCheck({ checksDb }) {
       modifiedAt: Date.now(),
     });
 
+    if (check.getHash() === existing.hash) {
+      return existing;
+    }
+
     const checkSchedule = check.getSchedule();
 
     const updatedCheck = await checksDb.update({
