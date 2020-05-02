@@ -1,15 +1,16 @@
 import { createCheck } from '../entities';
+import ErrorResponse from '../utils/error-response';
 
 export default function createEditCheck({ checksDb }) {
   return async function ({ id, ...changes }) {
     if (!id) {
-      throw new Error('You must supply an id.');
+      throw new ErrorResponse('You must supply an id.', 400);
     }
 
     const existing = await checksDb.findById({ id });
 
     if (!existing) {
-      throw new Error(`Check was not found with id of ${id}.`);
+      throw new ErrorResponse(`Check was not found with id of ${id}.`, 401);
     }
 
     const check = await createCheck({

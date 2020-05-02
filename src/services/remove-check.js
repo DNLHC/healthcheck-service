@@ -1,7 +1,8 @@
+import ErrorResponse from '../utils/error-response';
 export default function createRemoveCheck({ checksDb }) {
   return async function ({ id }) {
     if (!id) {
-      throw new Error('You must supply an id.');
+      throw new ErrorResponse('You must supply an id.', 400);
     }
 
     const checkToDelete = await checksDb.findById({ id });
