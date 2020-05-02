@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { checksRoutes } from './express/routes';
 import errorHandler from './express/error-handler';
 import { createDb } from './db';
+import attachShutdownHandlers from './express/shutdown-handler';
 
 const app = express();
 
@@ -20,7 +21,8 @@ app.use(errorHandler);
 (async () => {
   try {
     await createDb();
-    app.listen(process.env.APP_PORT);
+    const server = app.listen(process.env.APP_PORT);
+    attachShutdownHandlers({ server });
   } catch (error) {
     console.error(error);
   }
