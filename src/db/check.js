@@ -5,6 +5,7 @@ export default function createChecksDb({ createDb, createId }) {
     update,
     remove,
     findByHash,
+    findAll,
   });
 
   function _normalize({ _id: id, ...data }) {
@@ -20,6 +21,14 @@ export default function createChecksDb({ createDb, createId }) {
       .insertOne({ _id, ...checkData });
 
     return _normalize(result.ops[0]);
+  }
+
+  async function findAll({ activeOnly = false } = {}) {
+    const db = await createDb();
+    const query = activeOnly ? { active: true } : {};
+    const result = await db.collection('checks').find(query);
+
+    return (await result.toArray()).map(_normalize);
   }
 
   async function findById({ id: _id }) {
