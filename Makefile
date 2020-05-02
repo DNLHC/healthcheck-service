@@ -27,7 +27,7 @@ enter-bash:
 
 test:
 	docker build -t healthchecker:test --target test .
-	docker run --rm --env-file .env --network hc-net healthchecker:test
+	docker run --rm --env-file .env healthchecker:test
 
 log:
 ifdef CONTAINER
