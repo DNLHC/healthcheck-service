@@ -88,6 +88,17 @@ describe('Check Entity', () => {
     expect(check.getRequestTime()).toBeNull();
   });
 
+  it('Includes a hash', async () => {
+    const fakeCheck = await createCheck({
+      name: 'Google',
+      url: 'https://google.com',
+      active: true,
+      cron: '5 0 * 8 *',
+    });
+
+    expect(fakeCheck.getHash()).toBe('c27f27fea912e58222ba9d38c811759a');
+  });
+
   it('Schedule must have a cron expression', async () => {
     const fakeCheck = await createFakeCheck({ cron: undefined });
     expect(createCheck(fakeCheck)).rejects.toThrowError(/cron/gi);

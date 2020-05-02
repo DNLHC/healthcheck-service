@@ -25,6 +25,19 @@ describe('Checks Database', () => {
     expect(foundCheck).toEqual(fakeCheck);
   });
 
+  it('Finds a check by hash', async () => {
+    const assertions = 3;
+    async function runAssertion() {
+      const fakeCheck = await createFakeCheck();
+      const insertedCheck = await checksDb.insert(fakeCheck);
+      const foundCheck = await checksDb.findByHash({ hash: fakeCheck.hash });
+      expect(foundCheck).toEqual(insertedCheck);
+    }
+
+    expect.assertions(assertions);
+    return Promise.all(Array.from({ length: assertions }, runAssertion));
+  });
+
   it('Updates a check', async () => {
     const fakeCheck = await createFakeCheck();
     await checksDb.insert(fakeCheck);

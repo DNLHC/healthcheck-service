@@ -4,6 +4,7 @@ export default function createChecksDb({ createDb, createId }) {
     findById,
     update,
     remove,
+    findByHash,
   });
 
   function _normalize({ _id: id, ...data }) {
@@ -24,6 +25,14 @@ export default function createChecksDb({ createDb, createId }) {
   async function findById({ id: _id }) {
     const db = await createDb();
     const result = await db.collection('checks').find({ _id });
+    const [found] = await result.toArray();
+
+    return found ? _normalize(found) : null;
+  }
+
+  async function findByHash({ hash }) {
+    const db = await createDb();
+    const result = await db.collection('checks').find({ hash });
     const [found] = await result.toArray();
 
     return found ? _normalize(found) : null;
