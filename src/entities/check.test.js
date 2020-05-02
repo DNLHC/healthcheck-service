@@ -19,7 +19,7 @@ describe('Check Entity', () => {
     expect(createCheck(fakeCheck)).rejects.toThrowError(/url/gi);
   });
 
-  it('must have a valid url', async () => {
+  it('Must have a valid url', async () => {
     const invalidArgs = ['invalid-url', 'google.com', 'ssh://yandex.ru'];
     const validArgs = [
       'http://yandex.ru',
@@ -66,5 +66,54 @@ describe('Check Entity', () => {
     expect(check.isActive()).toBe(true);
     check.deactivate();
     expect(check.isActive()).toBe(false);
+  });
+
+  it('Can reset resource', async () => {
+    const fakeCheck = await createFakeCheck({
+      statusBefore: 200,
+      statusAfter: 503,
+      requestTime: 100,
+    });
+
+    const check = await createCheck(fakeCheck);
+
+    expect(check.getStatusBefore()).toBe(fakeCheck.statusBefore);
+    expect(check.getStatusAfter()).toBe(fakeCheck.statusAfter);
+    expect(check.getRequestTime()).toBe(fakeCheck.requestTime);
+
+    check.resetResource();
+
+    expect(check.getStatusBefore()).toBeNull();
+    expect(check.getStatusAfter()).toBeNull();
+    expect(check.getRequestTime()).toBeNull();
+  });
+
+  it('Schedule must have a cron expression', async () => {
+    const fakeCheck = await createFakeCheck({ cron: undefined });
+    expect(createCheck(fakeCheck)).rejects.toThrowError(/cron/gi);
+  });
+
+  it('Schedule must have a valid cron expression', async () => {
+    expect.assertions(3);
+
+    async function testInvalidCron(cron) {
+      const fakeCheck = await createFakeCheck({ cron });
+      return expect(createCheck(fakeCheck)).rejects.toThrowError(
+        /valid cron/gi
+      );
+    }
+
+    async function testValidCron(cron) {
+      const fakeCheck = await createFakeCheck({ cron });
+      return expect(createCheck(fakeCheck)).resolves.not.toThrow();
+    }
+
+    const tests = [
+      testInvalidCron('invalid cron expression'),
+      testValidCron('*/2 10 * * *'),
+      testValidCron('10 10 10 * * *'),
+    ];
+
+    return Promise.all(tests);
   });
 });

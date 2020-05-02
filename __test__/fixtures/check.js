@@ -11,6 +11,7 @@ export default async function createFakeCheck(overrides = {}) {
     active: faker.random.boolean(),
     createdAt: Date.now(),
     modifiedAt: Date.now(),
+    cron: `${faker.random.number(20)} * * * *`,
     ...overrides,
   };
 }

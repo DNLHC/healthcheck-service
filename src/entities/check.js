@@ -1,4 +1,8 @@
-export default function buildCreateCheck({ createId, isValidUrl }) {
+export default function buildCreateCheck({
+  createId,
+  isValidUrl,
+  createSchedule,
+}) {
   return async function ({
     id,
     name,
@@ -9,6 +13,7 @@ export default function buildCreateCheck({ createId, isValidUrl }) {
     statusBefore,
     statusAfter,
     requestTime,
+    ...schedule
   }) {
     const _id = id || (await createId());
 
@@ -27,6 +32,8 @@ export default function buildCreateCheck({ createId, isValidUrl }) {
     if (!isValidUrl(url)) {
       throw new Error('URL must be valid');
     }
+
+    const validSchedule = createSchedule(schedule);
 
     return Object.freeze({
       getName: () => name,
@@ -49,6 +56,7 @@ export default function buildCreateCheck({ createId, isValidUrl }) {
       getStatusBefore: () => statusBefore,
       getStatusAfter: () => statusAfter,
       getRequestTime: () => requestTime,
+      getSchedule: () => validSchedule,
     });
   };
 }
