@@ -6,8 +6,14 @@ import buildCreateHandleCheck from './handle-check';
 import { checksDb } from '../db';
 import scheduler from '../scheduler';
 import createHasAttributeChanged from '../utils/has-attribute-changed';
+import requestStatus from '../request-status';
+import notifier from '../notifier';
 
-export const createHandleCheck = buildCreateHandleCheck();
+export const createHandleCheck = buildCreateHandleCheck({
+  notifier,
+  checksDb,
+  requestStatus,
+});
 export const addCheck = createAddCheck({
   checksDb,
   scheduler,
