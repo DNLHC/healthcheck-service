@@ -40,7 +40,7 @@ export default function createEditCheck({
     }
 
     const updatedCheck = await checksDb.update({
-      id,
+      id: check.getId(),
       hash: check.getHash(),
       name: check.getName(),
       url: check.getUrl(),

@@ -14,7 +14,10 @@ describe('Remove Check Service', () => {
   afterAll(() => closeDb());
 
   it('Handles non existent checks', async () => {
-    const removeCheck = createRemoveCheck({ checksDb });
+    const removeCheck = createRemoveCheck({
+      checksDb,
+      scheduler: { destroy() {} },
+    });
     const expectedResponse = {
       deletedCount: 0,
       message: 'Check not found, nothing to delete.',
@@ -25,7 +28,10 @@ describe('Remove Check Service', () => {
   });
 
   it('Deletes check', async () => {
-    const removeCheck = createRemoveCheck({ checksDb });
+    const removeCheck = createRemoveCheck({
+      checksDb,
+      scheduler: { destroy() {} },
+    });
 
     const fakeCheck = await createFakeCheck();
     await checksDb.insert(fakeCheck);
@@ -43,5 +49,22 @@ describe('Remove Check Service', () => {
 
     const notFoundCheck = await checksDb.findById({ id: fakeCheck.id });
     expect(notFoundCheck).toBeNull();
+  });
+
+  it('Unschedules check', async () => {
+    const destroy = jest.fn();
+    const fakeCheck = await createFakeCheck();
+    const mockDb = {
+      findById: jest.fn().mockResolvedValue(fakeCheck),
+      remove: jest.fn().mockResolvedValue(1),
+    };
+
+    const removeCheck = createRemoveCheck({
+      checksDb: mockDb,
+      scheduler: { destroy },
+    });
+
+    await removeCheck({ id: fakeCheck.id });
+    expect(destroy).toHaveBeenCalledWith({ id: fakeCheck.id });
   });
 });

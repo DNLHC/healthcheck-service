@@ -16,8 +16,34 @@ describe('Add Check Service', () => {
 
   it('Inserts check in the database', async () => {
     const fakeCheck = await createFakeCheck();
-    const addCheck = createAddCheck({ checksDb });
+    const addCheck = createAddCheck({
+      checksDb,
+      scheduler: { scheduleJob() {} },
+      createHandleCheck: () => {},
+    });
     const insertedCheck = await addCheck(fakeCheck);
     expect(insertedCheck).toMatchObject(fakeCheck);
+  });
+
+  it('Schedules a job', async () => {
+    const fakeCheck = await createFakeCheck();
+    const insert = jest.fn().mockResolvedValue(fakeCheck);
+    const scheduleJob = jest.fn();
+    const handleCheck = () => {};
+
+    const addCheck = createAddCheck({
+      checksDb: { insert, findByHash: () => null },
+      scheduler: { scheduleJob },
+      createHandleCheck: () => handleCheck,
+    });
+
+    await addCheck(fakeCheck);
+
+    expect(scheduleJob).toHaveBeenCalledWith({
+      id: fakeCheck.id,
+      active: fakeCheck.active,
+      cron: fakeCheck.cron,
+      handler: handleCheck,
+    });
   });
 });
