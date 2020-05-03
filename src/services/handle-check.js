@@ -47,7 +47,7 @@ export default function buildCreateHandleCheck({
   }
 
   function notify({ name, url, statusBefore, statusAfter }) {
-    const subject = `[healthchecker] ${name}'s status changed`;
+    const subject = `[healthcheck] ${name}'s status changed`;
     const text = `${name}, ${url}, ${statusBefore}, ${statusAfter}`;
     return notifier({ subject, text });
   }
