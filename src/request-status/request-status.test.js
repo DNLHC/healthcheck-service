@@ -12,7 +12,7 @@ describe('Request Status', () => {
     expect(status).toBe(200);
   });
 
-  it('Returns statsu code when throws', async () => {
+  it('Returns status code when throws', async () => {
     const httpClient = jest
       .fn()
       .mockRejectedValue(new Error('Internal Server Error'));
