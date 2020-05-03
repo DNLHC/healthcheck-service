@@ -5,11 +5,13 @@ describe('Request Status', () => {
   it('Returns a status code', async () => {
     const httpClient = jest.fn().mockResolvedValue({
       statusCode: 200,
+      timings: { phases: { total: 100 } },
     });
     const requestStatus = createRequestStatus({ httpClient });
 
-    const status = await requestStatus({ url: 'https://google.com' });
-    expect(status).toBe(200);
+    const result = await requestStatus({ url: 'https://google.com' });
+    expect(result.status).toBe(200);
+    expect(result.time).toBe(100);
   });
 
   it('Returns status code when throws', async () => {
@@ -18,7 +20,9 @@ describe('Request Status', () => {
       .mockRejectedValue(new Error('Internal Server Error'));
     const requestStatus = createRequestStatus({ httpClient });
 
-    const status = await requestStatus({ url: 'https://google.com' });
-    expect(status).toBe(500);
+    const result = await requestStatus({ url: 'https://google.com' });
+
+    expect(result.status).toBe(500);
+    expect(result.time).toBeNull();
   });
 });

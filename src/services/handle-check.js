@@ -15,12 +15,13 @@ export default function buildCreateHandleCheck({
 
     return async function () {
       const check = await checksDb.findById({ id });
-      const status = await requestStatus({ url: check.url });
+      const { status, time } = await requestStatus({ url: check.url });
 
       const validCheck = await createCheck({
         ...check,
         statusBefore: check.statusAfter || status,
         statusAfter: status,
+        requestTime: time,
         modifiedAt: Date.now(),
         lastContactAt: Date.now(),
       });
@@ -30,6 +31,7 @@ export default function buildCreateHandleCheck({
         modifiedAt: validCheck.getModifiedAt(),
         statusBefore: validCheck.getStatusBefore(),
         statusAfter: validCheck.getStatusAfter(),
+        requestTime: validCheck.getRequestTime(),
         lastContactAt: validCheck.getSchedule().getLastContactAt(),
       });
 

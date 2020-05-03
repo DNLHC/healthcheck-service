@@ -24,7 +24,10 @@ describe('Handle Check Service', () => {
   });
 
   it("Updates check's status", async () => {
-    const requestResponse = 200;
+    const requestResponse = {
+      status: 200,
+      time: 100,
+    };
     const requestStatus = jest.fn().mockResolvedValue(requestResponse);
 
     const createHandleCheck = buildCreateHandleCheck({
@@ -36,25 +39,31 @@ describe('Handle Check Service', () => {
     const fakeCheck = await createFakeCheck({
       statusBefore: 200,
       statusAfter: 503,
+      requestTime: null,
     });
 
     const insertedCheck = await checksDb.insert(fakeCheck);
 
     expect(insertedCheck.statusBefore).toBe(fakeCheck.statusBefore);
     expect(insertedCheck.statusAfter).toBe(fakeCheck.statusAfter);
+    expect(insertedCheck.requestTime).toBeNull();
 
     const handleCheck = createHandleCheck({ id: fakeCheck.id });
     const updatedCheck = await handleCheck();
 
     expect(requestStatus).toHaveBeenCalledWith({ url: fakeCheck.url });
     expect(updatedCheck.statusBefore).toBe(insertedCheck.statusAfter);
-    expect(updatedCheck.statusAfter).toBe(requestResponse);
+    expect(updatedCheck.statusAfter).toBe(requestResponse.status);
+    expect(updatedCheck.requestTime).toBe(requestResponse.time);
     expect(updatedCheck.modifiedAt).not.toBe(insertedCheck.modifiedAt);
     expect(updatedCheck.lastContactAt).not.toBe(insertedCheck.lastContactAt);
   });
 
   it('Sends notification', async () => {
-    const requestResponse = 500;
+    const requestResponse = {
+      status: 500,
+      time: null,
+    };
     const requestStatus = jest.fn().mockResolvedValue(requestResponse);
     const notifier = jest.fn();
 
@@ -67,6 +76,7 @@ describe('Handle Check Service', () => {
     const fakeCheck = await createFakeCheck({
       statusBefore: 200,
       statusAfter: 200,
+      requestTime: 100,
     });
 
     const insertedCheck = await checksDb.insert(fakeCheck);
@@ -80,8 +90,9 @@ describe('Handle Check Service', () => {
       return { subject, text };
     };
 
-    expect(updatedCheck.statusAfter).toBe(requestResponse);
+    expect(updatedCheck.statusAfter).toBe(requestResponse.status);
     expect(updatedCheck.statusAfter).not.toBe(insertedCheck.statusAfter);
+    expect(updatedCheck.requestTime).toBeNull();
     expect(notifier).toHaveBeenCalledWith(getExpectedNotifierArgs());
   });
 });
