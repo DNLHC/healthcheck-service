@@ -16,6 +16,10 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/api/v1/checks', checksRoutes);
 
+app.use('/healthz', (req, res) => {
+  res.send("I'm good.");
+});
+
 app.use(errorHandler);
 
 (async () => {
