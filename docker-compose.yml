@@ -15,6 +15,25 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - isolated
+    container_name: healthcheck-api
+    healthcheck:
+      test: node healthcheck.js
+      interval: 30s
+
+  test:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: test
+    env_file:
+      - .env
+    depends_on:
+      node:
+        condition: service_healthy
+    networks:
+      - isolated
 
   db:
     image: mongo
@@ -26,8 +45,15 @@ services:
       - ./db:/data/db
       - ./setup-db:/docker-entrypoint-initdb.d
     restart: always
+    networks:
+      - isolated
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo localhost:${DATABASE_PORT}/test --quiet
       interval: 5s
       timeout: 5s
       retries: 3
+
+networks:
+  isolated:
+    driver: bridge
+    name: hc-net

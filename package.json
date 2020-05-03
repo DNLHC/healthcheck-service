@@ -7,7 +7,9 @@
     "start": "yarn run serve",
     "serve": "node dist/index.js",
     "dev": "nodemon --exec babel-node ./src/index.js",
-    "test": "jest src",
+    "test": "yarn run test:unit && yarn run test:e2e",
+    "test:unit": "jest src",
+    "test:e2e": "jest ./__test__ --runInBand --forceExit",
     "lint": "eslint ./src"
   },
   "devDependencies": {

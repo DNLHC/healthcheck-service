@@ -25,9 +25,11 @@ rebuild:
 enter-bash:
 	docker-compose exec $(CONTAINER) bash -it
 
-test:
+test: up run-test down
+
+run-test:
 	docker build -t healthchecker:test --target test .
-	docker run --rm --env-file .env healthchecker:test
+	docker run --rm --env-file .env --network hc-net healthchecker:test
 
 log:
 ifdef CONTAINER
