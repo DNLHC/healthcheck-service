@@ -5,6 +5,7 @@ import { checksRoutes } from './express/routes';
 import errorHandler from './express/error-handler';
 import { createDb } from './db';
 import attachShutdownHandlers from './express/shutdown-handler';
+import { launchChecks } from './services';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(errorHandler);
 (async () => {
   try {
     await createDb();
+    await launchChecks();
     const server = app.listen(process.env.APP_PORT);
     attachShutdownHandlers({ server });
   } catch (error) {
