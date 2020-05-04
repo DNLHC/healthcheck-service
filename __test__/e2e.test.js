@@ -3,21 +3,18 @@ import got from 'got';
 import { checksDb, createDb } from '../src/db';
 import createFakeCheck from './fixtures/check';
 
+const request = got.extend({
+  prefixUrl: `http://healthcheck-api:${process.env.APP_PORT}/api/v1`,
+  throwHttpErrors: false,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  retry: 0,
+  responseType: 'json',
+});
+
 /* eslint-disable no-undefined, max-nested-callbacks */
 describe('Checks API', () => {
-  let request;
-
-  beforeAll(() => {
-    request = got.extend({
-      prefixUrl: `http://healthcheck-api:${process.env.APP_PORT}/api/v1`,
-      throwHttpErrors: false,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      responseType: 'json',
-    });
-  });
-
   afterAll(async () => {
     const db = await createDb();
     return db.collection('checks').deleteMany({});
