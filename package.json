@@ -4,8 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "yarn run serve",
+    "start": "yarn run build && yarn run serve",
     "serve": "node dist/index.js",
+    "build": "yarn run clean && mkdir -p dist && babel src -s -D -d dist",
+    "clean": "rimraf dist",
     "dev": "nodemon --exec babel-node ./src/index.js",
     "test": "yarn run test:unit && yarn run test:e2e",
     "test:unit": "jest src",

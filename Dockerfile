@@ -28,3 +28,6 @@ ENV PATH=/app/node_modules/.bin:$PATH
 COPY --from=dev /app/node_modules /app/node_modules
 RUN yarn run lint
 CMD [ "yarn", "run", "test" ]
+
+FROM source as prod
+CMD ["yarn run start"]
