@@ -1,4 +1,3 @@
-// @ts-nocheck
 import got from 'got';
 import { checksDb, createDb } from '../src/db';
 import createFakeCheck from './fixtures/check';

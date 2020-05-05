@@ -18,15 +18,14 @@
   },
 
   // Defaults override:
-  "json.format.enable": true,
-  "javascript.validate.enable": true,
+  "json.format.enable": false,
+  "javascript.validate.enable": false,
 
   // Linting:
   "eslint.enable": true,
-  "eslint.validate": [
-    "typescript",
-    "javascript"
-  ],
+  "eslint.validate": ["typescript", "javascript"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },

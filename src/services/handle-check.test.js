@@ -1,4 +1,3 @@
-// @ts-nocheck
 import createDb, { closeDb } from '../../__test__/fixtures/db';
 import createFakeCheck from '../../__test__/fixtures/check';
 import createChecksDb from '../db/check';

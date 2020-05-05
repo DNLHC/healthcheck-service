@@ -1,4 +1,3 @@
-// @ts-nocheck
 import createRequestStatus from './request-status';
 
 describe('Request Status', () => {

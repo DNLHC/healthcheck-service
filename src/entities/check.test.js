@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createCheck } from './';
 import createFakeCheck from '../../__test__/fixtures/check';
 

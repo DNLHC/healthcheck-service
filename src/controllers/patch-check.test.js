@@ -1,4 +1,3 @@
-// @ts-nocheck
 import createPatchCheck from './patch-check';
 import createFakeCheck from '../../__test__/fixtures/check';
 

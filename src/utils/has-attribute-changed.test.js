@@ -1,4 +1,3 @@
-// @ts-nocheck
 import createHasAttributeChanged from './has-attribute-changed';
 
 describe('Has Attribue Changed', () => {
