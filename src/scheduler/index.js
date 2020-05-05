@@ -1,5 +1,5 @@
 import createScheduler from './scheduler';
-import cronClient from 'node-cron';
+import cronClient from 'cron';
 
 const scheduler = createScheduler({ schedules: new Map(), cronClient });
 

@@ -34,7 +34,7 @@ describe('Add Check Service', () => {
     const addCheck = createAddCheck({
       checksDb: { insert, findByHash: () => null },
       scheduler: { scheduleJob },
-      createHandleCheck: () => handleCheck,
+      handleCheck,
     });
 
     await addCheck(fakeCheck);

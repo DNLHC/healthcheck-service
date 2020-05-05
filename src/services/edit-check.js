@@ -4,7 +4,6 @@ import ErrorResponse from '../utils/error-response';
 export default function createEditCheck({
   checksDb,
   scheduler,
-  createHandleCheck,
   createHasAttributeChanged,
 }) {
   return async function ({ id, ...changes }) {
@@ -53,13 +52,13 @@ export default function createEditCheck({
     });
 
     if (hasAttributeChanged('cron')) {
-      scheduler.scheduleJob({
+      scheduler.reschedule({
         id: check.getId(),
         cron: checkSchedule.getCron(),
-        active: check.isActive(),
-        handler: createHandleCheck({ id: check.getId() }),
       });
-    } else if (hasAttributeChanged('active')) {
+    }
+
+    if (hasAttributeChanged('active')) {
       scheduler.toggle({ id: check.getId(), active: check.isActive() });
     }
 

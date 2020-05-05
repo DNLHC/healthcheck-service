@@ -1,10 +1,6 @@
 import { createCheck } from '../entities';
 
-export default function createAddCheck({
-  checksDb,
-  scheduler,
-  createHandleCheck,
-}) {
+export default function createAddCheck({ checksDb, scheduler, handleCheck }) {
   return async function (checkData) {
     const check = await createCheck(checkData);
     const exists = await checksDb.findByHash({ hash: check.getHash() });
@@ -25,8 +21,6 @@ export default function createAddCheck({
       url: check.getUrl(),
       cron: checkSchedule.getCron(),
     });
-
-    const handleCheck = createHandleCheck({ id: check.getId() });
 
     scheduler.scheduleJob({
       id: check.getId(),

@@ -3,7 +3,7 @@ import { createCheck } from '../entities';
 export default function createLaunchChecks({
   listChecks,
   scheduler,
-  createHandleCheck,
+  handleCheck,
 }) {
   return async function () {
     const checks = await listChecks();
@@ -15,7 +15,7 @@ export default function createLaunchChecks({
         id: validCheck.getId(),
         cron: validCheck.getSchedule().getCron(),
         active: validCheck.isActive(),
-        handler: createHandleCheck({ id: validCheck.getId() }),
+        handler: handleCheck,
       });
     }
   };

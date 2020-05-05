@@ -2,7 +2,7 @@
 import createDb, { closeDb } from '../../__test__/fixtures/db';
 import createFakeCheck from '../../__test__/fixtures/check';
 import createChecksDb from '../db/check';
-import buildCreateHandleCheck from './handle-check';
+import createHandleCheck from './handle-check';
 
 /* eslint-disable no-undefined */
 describe('Handle Check Service', () => {
@@ -15,12 +15,12 @@ describe('Handle Check Service', () => {
   afterAll(() => closeDb());
 
   it('Must supply an id', async () => {
-    const createHandleCheck = buildCreateHandleCheck({
+    const handleCheck = createHandleCheck({
       checksDb: null,
       notifier: null,
       requestStatus: null,
     });
-    expect(() => createHandleCheck({ id: undefined })).toThrowError(/id/gi);
+    expect(handleCheck({ id: undefined })).rejects.toThrowError(/id/gi);
   });
 
   it("Updates check's status", async () => {
@@ -30,7 +30,7 @@ describe('Handle Check Service', () => {
     };
     const requestStatus = jest.fn().mockResolvedValue(requestResponse);
 
-    const createHandleCheck = buildCreateHandleCheck({
+    const handleCheck = createHandleCheck({
       requestStatus,
       notifier: () => {},
       checksDb,
@@ -48,8 +48,8 @@ describe('Handle Check Service', () => {
     expect(insertedCheck.statusAfter).toBe(fakeCheck.statusAfter);
     expect(insertedCheck.requestTime).toBeNull();
 
-    const handleCheck = createHandleCheck({ id: fakeCheck.id });
-    const updatedCheck = await handleCheck();
+    const nextContactAt = Date.now();
+    const updatedCheck = await handleCheck({ id: fakeCheck.id, nextContactAt });
 
     expect(requestStatus).toHaveBeenCalledWith({ url: fakeCheck.url });
     expect(updatedCheck.statusBefore).toBe(insertedCheck.statusAfter);
@@ -57,6 +57,7 @@ describe('Handle Check Service', () => {
     expect(updatedCheck.requestTime).toBe(requestResponse.time);
     expect(updatedCheck.modifiedAt).not.toBe(insertedCheck.modifiedAt);
     expect(updatedCheck.lastContactAt).not.toBe(insertedCheck.lastContactAt);
+    expect(updatedCheck.nextContactAt).toBe(nextContactAt);
   });
 
   it('Sends notification', async () => {
@@ -67,7 +68,7 @@ describe('Handle Check Service', () => {
     const requestStatus = jest.fn().mockResolvedValue(requestResponse);
     const notifier = jest.fn();
 
-    const createHandleCheck = buildCreateHandleCheck({
+    const handleCheck = createHandleCheck({
       requestStatus,
       notifier,
       checksDb,
@@ -80,8 +81,10 @@ describe('Handle Check Service', () => {
     });
 
     const insertedCheck = await checksDb.insert(fakeCheck);
-    const handleCheck = createHandleCheck({ id: fakeCheck.id });
-    const updatedCheck = await handleCheck();
+    const updatedCheck = await handleCheck({
+      id: fakeCheck.id,
+      nextContactAt: Date.now(),
+    });
 
     const getExpectedNotifierArgs = () => {
       const { name, url, statusBefore, statusAfter } = updatedCheck;

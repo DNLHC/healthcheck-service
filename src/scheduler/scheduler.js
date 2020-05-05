@@ -3,6 +3,7 @@ export default function createScheduler({ schedules = new Map(), cronClient }) {
     scheduleJob,
     start,
     stop,
+    reschedule,
     toggle,
     destroy,
   });
@@ -12,11 +13,31 @@ export default function createScheduler({ schedules = new Map(), cronClient }) {
       destroy({ id });
     }
 
-    const job = cronClient.schedule(cron, handler, {
-      scheduled: active,
-    });
+    const job = cronClient.job(
+      cron,
+      _createHandler({ id, handler }),
+      null,
+      active,
+      process.env.TZ
+    );
 
     schedules.set(id, job);
+  }
+
+  function reschedule({ id, cron }) {
+    const job = schedules.get(id);
+    job.setTime(cronClient.time(cron));
+  }
+
+  function _createHandler({ id, handler }) {
+    return () => {
+      const job = schedules.get(id);
+
+      handler({
+        id,
+        nextContactAt: job.nextDate().toDate().getTime(),
+      });
+    };
   }
 
   function start({ id }) {
@@ -38,11 +59,7 @@ export default function createScheduler({ schedules = new Map(), cronClient }) {
   }
 
   function destroy({ id }) {
-    const job = schedules.get(id);
-
-    if (job) {
-      schedules.delete(id);
-      job.destroy();
-    }
+    stop({ id });
+    schedules.delete(id);
   }
 }

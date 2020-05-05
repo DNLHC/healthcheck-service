@@ -33,7 +33,7 @@ describe('Edit Check Service', () => {
 
   it('Modifies check', async () => {
     const scheduler = {
-      scheduleJob: () => {},
+      reschedule: () => {},
       toggle: () => {},
     };
     const editCheck = createEditCheck({
@@ -59,7 +59,7 @@ describe('Edit Check Service', () => {
 
   it('Resets resource fields when url has changed', async () => {
     const scheduler = {
-      scheduleJob: () => {},
+      reschedule: () => {},
       toggle: () => {},
     };
 
@@ -95,7 +95,7 @@ describe('Edit Check Service', () => {
 
   it('Toggles schedule if state changes', async () => {
     const scheduler = {
-      scheduleJob: () => {},
+      reschedule: () => {},
       toggle: jest.fn(),
     };
 
@@ -124,16 +124,15 @@ describe('Edit Check Service', () => {
 
   it('Reschedules job if cron rule has changed', async () => {
     const scheduler = {
-      scheduleJob: jest.fn(),
+      reschedule: jest.fn(),
       toggle: () => {},
     };
-    const handleCheck = () => {};
 
     const editCheck = createEditCheck({
       checksDb,
       createHasAttributeChanged,
       scheduler,
-      createHandleCheck: () => handleCheck,
+      handleCheck: () => {},
     });
 
     const fakeCheck = await createFakeCheck();
@@ -145,11 +144,9 @@ describe('Edit Check Service', () => {
     });
 
     expect(editedCheck.cron).toBe('*/2 * 10 * 1');
-    expect(scheduler.scheduleJob).toHaveBeenCalledWith({
+    expect(scheduler.reschedule).toHaveBeenCalledWith({
       id: editedCheck.id,
       cron: editedCheck.cron,
-      active: editedCheck.active,
-      handler: handleCheck,
     });
   });
 });
