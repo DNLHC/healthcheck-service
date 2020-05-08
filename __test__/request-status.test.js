@@ -7,12 +7,12 @@ describe('Request Status', () => {
     expect(result.time).toBeDefined();
   });
 
-  it('Returns a status code when throws', async () => {
+  it('Returns a error status', async () => {
     const result = await requestStatus({
-      url: 'https://hopefullynonexistentwebsite1235.com',
+      url: 'http://hopefullyanonexistentwebsite123.io',
     });
 
-    expect(result.status).toBe(500);
-    expect(result.time).toBeNull();
+    expect(result.status).toBe('ENOTFOUND');
+    expect(result.time).toBeDefined();
   });
 });

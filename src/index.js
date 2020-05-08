@@ -33,3 +33,5 @@ app.use(errorHandler);
     console.error(error);
   }
 })();
+
+export default app;

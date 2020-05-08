@@ -14,14 +14,24 @@ describe('Request Status', () => {
   });
 
   it('Returns status code when throws', async () => {
+    class RequestError extends Error {
+      constructor(code, message) {
+        super(message);
+        this.code = code;
+        this.timings = { phases: { total: 10 } };
+      }
+    }
+
     const httpClient = jest
       .fn()
-      .mockRejectedValue(new Error('Internal Server Error'));
+      .mockRejectedValue(
+        new RequestError('ENOTFOUND', 'getaddrinfo ENOTFOUND')
+      );
     const requestStatus = createRequestStatus({ httpClient });
 
     const result = await requestStatus({ url: 'https://google.com' });
 
-    expect(result.status).toBe(500);
-    expect(result.time).toBeNull();
+    expect(result.status).toBe('ENOTFOUND');
+    expect(result.time).toBeDefined();
   });
 });
