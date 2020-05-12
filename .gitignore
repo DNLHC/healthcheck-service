@@ -71,3 +71,4 @@ typings/
 
 #in memory mongo
 globalConfigMongo.json
+__test__/seeder.js

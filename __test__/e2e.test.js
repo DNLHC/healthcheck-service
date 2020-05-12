@@ -97,7 +97,7 @@ describe('Checks API', () => {
     });
   });
 
-  describe('Listing checks', () => {
+  describe('Finding checks', () => {
     it('Lists checks', async () => {
       const fakeChecks = await Promise.all(
         Array.from({ length: 2 }, () => createFakeCheck())
@@ -114,6 +114,17 @@ describe('Checks API', () => {
       });
 
       return Promise.all(insertedChecks.map(checksDb.remove));
+    });
+
+    it('Finds check', async () => {
+      const fakeCheck = await createFakeCheck();
+      const insertedCheck = await checksDb.insert(fakeCheck);
+
+      const response = await request.get(`checks/${fakeCheck.id}`);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toEqual(insertedCheck);
     });
   });
 

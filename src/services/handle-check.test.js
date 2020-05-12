@@ -2,19 +2,23 @@ import createDb, { closeDb } from '../../__test__/fixtures/db';
 import createFakeCheck from '../../__test__/fixtures/check';
 import createChecksDb from '../db/check';
 import createHandleCheck from './handle-check';
+import createFindCheck from './find-check';
 
 /* eslint-disable no-undefined */
 describe('Handle Check Service', () => {
   let checksDb;
+  let findCheck;
 
   beforeAll(() => {
     checksDb = createChecksDb({ createDb, createId: () => {} });
+    findCheck = createFindCheck({ checksDb });
   });
 
   afterAll(() => closeDb());
 
   it('Must supply an id', async () => {
     const handleCheck = createHandleCheck({
+      findCheck,
       checksDb: null,
       notifier: null,
       requestStatus: null,
@@ -30,6 +34,7 @@ describe('Handle Check Service', () => {
     const requestStatus = jest.fn().mockResolvedValue(requestResponse);
 
     const handleCheck = createHandleCheck({
+      findCheck,
       requestStatus,
       notifier: () => {},
       checksDb,
@@ -68,6 +73,7 @@ describe('Handle Check Service', () => {
     const notifier = jest.fn();
 
     const handleCheck = createHandleCheck({
+      findCheck,
       requestStatus,
       notifier,
       checksDb,

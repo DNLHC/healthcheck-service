@@ -3,19 +3,23 @@ import createFakeCheck from '../../__test__/fixtures/check';
 import createChecksDb from '../db/check';
 import createEditCheck from './edit-check';
 import createHasAttributeChanged from '../utils/has-attribute-changed';
+import createFindCheck from './find-check';
 
 /* eslint-disable no-undefined */
 describe('Edit Check Service', () => {
   let checksDb;
+  let findCheck;
 
   beforeAll(() => {
     checksDb = createChecksDb({ createDb, createId: () => {} });
+    findCheck = createFindCheck({ checksDb });
   });
 
   afterAll(() => closeDb());
 
   it('Must include an id', async () => {
     const editCheck = createEditCheck({
+      findCheck,
       checksDb: {
         udpate: () => {
           throw new Error("Update shouldn't have been called.");
@@ -36,6 +40,7 @@ describe('Edit Check Service', () => {
       toggle: () => {},
     };
     const editCheck = createEditCheck({
+      findCheck,
       checksDb,
       scheduler,
       createHasAttributeChanged,
@@ -63,6 +68,7 @@ describe('Edit Check Service', () => {
     };
 
     const editCheck = createEditCheck({
+      findCheck,
       checksDb,
       createHasAttributeChanged,
       scheduler,
@@ -99,6 +105,7 @@ describe('Edit Check Service', () => {
     };
 
     const editCheck = createEditCheck({
+      findCheck,
       checksDb,
       createHasAttributeChanged,
       scheduler,
@@ -128,6 +135,7 @@ describe('Edit Check Service', () => {
     };
 
     const editCheck = createEditCheck({
+      findCheck,
       checksDb,
       createHasAttributeChanged,
       scheduler,
