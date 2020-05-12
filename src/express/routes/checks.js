@@ -5,12 +5,14 @@ import {
   patchCheck,
   deleteCheck,
   getChecks,
+  getCheck,
 } from '../../controllers';
 
 const router = express.Router();
 
 router
   .get('/', createControllerAdapter(getChecks))
+  .get('/:id', createControllerAdapter(getCheck))
   .post('/', createControllerAdapter(postCheck))
   .patch('/:id', createControllerAdapter(patchCheck))
   .delete('/:id', createControllerAdapter(deleteCheck));

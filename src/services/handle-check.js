@@ -1,17 +1,13 @@
-import ErrorResponse from '../utils/error-response';
 import { createCheck } from '../entities';
 
 export default function createHandleCheck({
+  findCheck,
   notifier,
   checksDb,
   requestStatus,
 }) {
   return async function ({ id, nextContactAt }) {
-    if (!id) {
-      throw new ErrorResponse('You must supply an id', 400);
-    }
-
-    const check = await checksDb.findById({ id });
+    const check = await findCheck({ id });
     const { status, time } = await requestStatus({ url: check.url });
 
     const validCheck = await createCheck({
